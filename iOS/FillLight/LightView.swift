@@ -36,14 +36,17 @@ struct LightView: View {
                     ringCenter(in: proxy.size)
                 }
 
+                // Tapping the light (not the controls) brings the controls back.
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { showControls() }
+
                 if controlsVisible {
                     controls
                         .transition(.opacity)
                 }
             }
             .ignoresSafeArea()
-            .contentShape(Rectangle())
-            .onTapGesture { showControls() }
         }
         .ignoresSafeArea()
         .onAppear { activate() }
@@ -51,8 +54,17 @@ struct LightView: View {
         .onChange(of: scenePhase) { _, phase in
             phase == .active ? activate() : deactivate()
         }
-        .onChange(of: screenBrightness) { _, value in brightness.apply(value) }
-        .onChange(of: mode) { _, _ in updateCamera() }
+        .onChange(of: screenBrightness) { _, value in
+            brightness.apply(value)
+            scheduleHide()
+        }
+        .onChange(of: mode) { _, _ in
+            updateCamera()
+            scheduleHide()
+        }
+        // Keep the controls up while the user is adjusting them.
+        .onChange(of: kelvin) { _, _ in scheduleHide() }
+        .onChange(of: ringWidth) { _, _ in scheduleHide() }
     }
 
     // MARK: Ring mode
@@ -119,7 +131,6 @@ struct LightView: View {
             .frame(maxWidth: 440)
             .padding(.horizontal, 16)
             .padding(.bottom, 32)
-            .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in scheduleHide() })
         }
     }
 
