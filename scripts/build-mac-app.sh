@@ -6,8 +6,12 @@ cd "$(dirname "$0")/.."
 VERSION="${VERSION:-1.0.0}"
 APP="build/FillLight.app"
 
-swift build -c release --product FillLight
-BIN="$(swift build -c release --show-bin-path)/FillLight"
+# Universal binary (Apple silicon + Intel) by default. Set ARCHS=arm64 to build one architecture.
+ARCH_FLAGS=()
+for arch in ${ARCHS:-arm64 x86_64}; do ARCH_FLAGS+=(--arch "$arch"); done
+
+swift build -c release --product FillLight "${ARCH_FLAGS[@]}"
+BIN="$(swift build -c release "${ARCH_FLAGS[@]}" --show-bin-path)/FillLight"
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
