@@ -15,15 +15,25 @@ struct LightView: View {
     @AppStorage("screenBrightness") private var screenBrightness = 1.0
     @AppStorage("ringWidth") private var ringWidth = 0.5
     @AppStorage("kelvin") private var kelvin = LightMath.defaultKelvin
+    @AppStorage("useCustomColor") private var useCustomColor = false
+    @AppStorage("customColor") private var customColorHex = LightMath.defaultCustomColor.hex
 
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var camera = FrontCamera()
     @State private var brightness = ScreenBrightness()
     @State private var controlsVisible = true
     @State private var hideTask: Task<Void, Never>?
+    @State private var pickingColor = false
+
+    private var customColor: Binding<LightColor> {
+        Binding(
+            get: { LightColor(hex: customColorHex) ?? LightMath.defaultCustomColor },
+            set: { customColorHex = $0.hex }
+        )
+    }
 
     private var lightColor: Color {
-        let c = LightMath.color(kelvin: kelvin)
+        let c = useCustomColor ? customColor.wrappedValue : LightMath.color(kelvin: kelvin)
         return Color(.sRGB, red: c.red, green: c.green, blue: c.blue)
     }
 
@@ -65,6 +75,13 @@ struct LightView: View {
         // Keep the controls up while the user is adjusting them.
         .onChange(of: kelvin) { _, _ in scheduleHide() }
         .onChange(of: ringWidth) { _, _ in scheduleHide() }
+        .onChange(of: useCustomColor) { _, _ in scheduleHide() }
+        // Half-height sheet, so the light stays visible while picking a color.
+        .sheet(isPresented: $pickingColor, onDismiss: scheduleHide) {
+            ColorPickerSheet(color: customColor) { pickingColor = false }
+                .presentationDetents([.medium, .large])
+                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        }
     }
 
     // MARK: Ring mode
@@ -122,9 +139,19 @@ struct LightView: View {
                            low: "circle", high: "circle.circle.fill")
                 }
 
-                // Cool on the left, warm on the right.
-                slider("Warmth", value: warmthBinding, range: LightMath.kelvinRange,
-                       low: "snowflake", high: "flame.fill")
+                Picker("Color", selection: $useCustomColor) {
+                    Text("White").tag(false)
+                    Text("Color").tag(true)
+                }
+                .pickerStyle(.segmented)
+
+                if useCustomColor {
+                    customColorRow
+                } else {
+                    // Cool on the left, warm on the right.
+                    slider("Warmth", value: warmthBinding, range: LightMath.kelvinRange,
+                           low: "snowflake", high: "flame.fill")
+                }
             }
             .padding(20)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
@@ -145,6 +172,30 @@ struct LightView: View {
         .foregroundStyle(.primary)
     }
 
+    private var customColorRow: some View {
+        Button {
+            hideTask?.cancel()
+            pickingColor = true
+        } label: {
+            HStack(spacing: 12) {
+                Circle()
+                    .fill(lightColor)
+                    .overlay(Circle().strokeBorder(.white.opacity(0.6), lineWidth: 1.5))
+                    .frame(width: 28, height: 28)
+                Text("Choose Color")
+                Spacer()
+                Text(customColorHex)
+                    .font(.callout.monospaced())
+                    .foregroundStyle(.secondary)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.secondary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.primary)
+    }
+
     private var warmthBinding: Binding<Double> {
         let r = LightMath.kelvinRange
         return Binding(
@@ -161,6 +212,8 @@ struct LightView: View {
     /// Controls fade out after a few seconds so the whole screen is light.
     private func scheduleHide() {
         hideTask?.cancel()
+        // Keep the controls (and the sheet's anchor) in place while the color picker is open.
+        guard !pickingColor else { return }
         hideTask = Task {
             try? await Task.sleep(for: .seconds(4))
             guard !Task.isCancelled else { return }

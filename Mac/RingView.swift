@@ -6,7 +6,7 @@ import FillLightCore
 /// just moves a mask layer, so it stays cheap on large displays.
 final class RingView: NSView {
     var brightness: Double = 0.5 { didSet { needsDisplay = true } }
-    var kelvin: Double = LightMath.defaultKelvin { didSet { needsDisplay = true } }
+    var color = LightMath.color(kelvin: LightMath.defaultKelvin) { didSet { needsDisplay = true } }
 
     var fadeNearPointer = true {
         didSet {
@@ -67,8 +67,7 @@ final class RingView: NSView {
         let shortSide = Double(min(bounds.width, bounds.height))
         let thickness = CGFloat(LightMath.ringThickness(brightness: brightness, shortSide: shortSide))
         let feather = thickness * 0.6
-        let c = LightMath.color(kelvin: kelvin)
-        let color = CGColor(srgbRed: c.red, green: c.green, blue: c.blue, alpha: 1)
+        let color = CGColor(srgbRed: self.color.red, green: self.color.green, blue: self.color.blue, alpha: 1)
 
         // Solid band: everything outside a rounded rectangle inset by `thickness`,
         // plus a glow (shadow) that fades into the middle of the screen.

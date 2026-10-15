@@ -43,7 +43,7 @@ final class OverlayController {
             window.setFrame(screen.frame, display: false)
             if let ring = window.contentView as? RingView {
                 ring.brightness = settings.brightness
-                ring.kelvin = settings.kelvin
+                ring.color = settings.lightColor
                 ring.fadeNearPointer = settings.fadeNearPointer
             }
             window.orderFrontRegardless()

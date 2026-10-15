@@ -31,6 +31,14 @@ check(LightMath.ringThickness(brightness: 0, shortSide: 1000) == 30, "min thickn
 check(LightMath.ringThickness(brightness: 1, shortSide: 1000) == 250, "max thickness")
 check(LightMath.ringThickness(brightness: 5, shortSide: 1000) == 250, "brightness is clamped")
 
+check(LightColor(hex: "#FF8000") == LightColor(red: 1, green: 128.0 / 255, blue: 0), "hex parses")
+check(LightColor(hex: "ff8000")?.hex == "#FF8000", "hex without # parses, output is uppercase with #")
+check(LightColor(hex: "#12345") == nil, "short hex is rejected")
+check(LightColor(hex: "#GG0000") == nil, "non-hex digits are rejected")
+let roundTrip = LightColor(red: 0.2, green: 0.4, blue: 0.6)
+check(LightColor(hex: roundTrip.hex)?.hex == roundTrip.hex, "hex round-trips")
+check(LightColor(red: 2, green: -1, blue: 0.5).red == 1, "components are clamped")
+
 if failures == 0 {
     print("core-check: all checks passed")
 } else {

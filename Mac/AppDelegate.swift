@@ -11,6 +11,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let toggleItem = NSMenuItem(title: "", action: #selector(toggleLight), keyEquivalent: "l")
     private let fadeItem = NSMenuItem(title: "Fade Near Pointer", action: #selector(toggleFade), keyEquivalent: "")
     private let allDisplaysItem = NSMenuItem(title: "Light All Displays", action: #selector(toggleAllDisplays), keyEquivalent: "")
+    private let whiteItem = NSMenuItem(title: "White Light", action: #selector(useWhiteLight), keyEquivalent: "")
+    private let customColorItem = NSMenuItem(title: "Custom Color…", action: #selector(chooseCustomColor), keyEquivalent: "")
     private let brightnessSlider = NSSlider()
     private let warmthSlider = NSSlider()
 
@@ -55,6 +57,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         warmthSlider.isContinuous = true
         menu.addItem(sliderItem(title: "Warmth", slider: warmthSlider))
 
+        whiteItem.target = self
+        menu.addItem(whiteItem)
+        customColorItem.target = self
+        menu.addItem(customColorItem)
+
         menu.addItem(.separator())
         fadeItem.target = self
         menu.addItem(fadeItem)
@@ -94,6 +101,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         toggleItem.title = on ? "Turn Light Off" : "Turn Light On"
         fadeItem.state = settings.fadeNearPointer ? .on : .off
         allDisplaysItem.state = settings.allDisplays ? .on : .off
+        whiteItem.state = settings.useCustomColor ? .off : .on
+        customColorItem.state = settings.useCustomColor ? .on : .off
+        customColorItem.image = settings.useCustomColor ? swatch(settings.customColor) : nil
         let symbol = on ? "lightbulb.fill" : "lightbulb"
         let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "FillLight")
         image?.isTemplate = true
@@ -130,7 +140,54 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func warmthChanged() {
+        // Moving the warmth slider means "white light again".
+        settings.useCustomColor = false
         settings.kelvin = flipKelvin(warmthSlider.doubleValue)
+    }
+
+    @objc private func useWhiteLight() {
+        settings.useCustomColor = false
+        updateUI()
+    }
+
+    @objc private func chooseCustomColor() {
+        let panel = NSColorPanel.shared
+        panel.showsAlpha = false
+        panel.isContinuous = true
+        panel.color = nsColor(settings.customColor)
+        panel.setTarget(self)
+        panel.setAction(#selector(colorPanelChanged(_:)))
+
+        settings.useCustomColor = true
+        // Show the color while picking it.
+        if !overlay.isOn { overlay.setOn(true) }
+        updateUI()
+
+        // A menu bar app is never frontmost on its own; bring the panel forward.
+        NSApp.activate(ignoringOtherApps: true)
+        panel.makeKeyAndOrderFront(nil)
+    }
+
+    @objc private func colorPanelChanged(_ panel: NSColorPanel) {
+        guard let rgb = panel.color.usingColorSpace(.sRGB) else { return }
+        settings.customColor = LightColor(red: rgb.redComponent, green: rgb.greenComponent, blue: rgb.blueComponent)
+        settings.useCustomColor = true
+        updateUI()
+    }
+
+    private func nsColor(_ c: LightColor) -> NSColor {
+        NSColor(srgbRed: c.red, green: c.green, blue: c.blue, alpha: 1)
+    }
+
+    /// A small round swatch shown next to "Custom Color…".
+    private func swatch(_ c: LightColor) -> NSImage {
+        NSImage(size: NSSize(width: 12, height: 12), flipped: false) { rect in
+            self.nsColor(c).setFill()
+            NSBezierPath(ovalIn: rect.insetBy(dx: 0.5, dy: 0.5)).fill()
+            NSColor.separatorColor.setStroke()
+            NSBezierPath(ovalIn: rect.insetBy(dx: 0.5, dy: 0.5)).stroke()
+            return true
+        }
     }
 
     @objc private func toggleFade() {

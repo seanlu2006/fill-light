@@ -13,6 +13,7 @@ macOS 26.2 and later ships a similar feature called [Edge Light](https://support
 
 - Click the lightbulb in the menu bar, or press **⌃⌥L** anywhere, to turn the light on or off.
 - **Brightness** makes the ring wider. **Warmth** goes from daylight (6500K) to warm (2700K).
+- **Custom Color…** lights the ring in any color you pick. Move the Warmth slider or choose **White Light** to go back to white.
 - **Fade Near Pointer** clears a soft hole around the mouse pointer so menus and buttons under the ring stay usable. The ring never blocks clicks.
 - Lights the display with the built-in camera by default. Turn on **Light All Displays** to light every screen.
 - Control it from Shortcuts or scripts with `filllight://on`, `filllight://off` and `filllight://toggle`, for example `open filllight://toggle`.
@@ -49,6 +50,7 @@ iOS does not let apps draw on top of other apps, so the iPhone and iPad version 
 - **Full** mode lights the whole screen. **Ring** mode lights the edges and shows your front camera in the middle, so you can see how you're lit. The camera image never leaves the device and is never recorded.
 - **Brightness** sets the display brightness. Your own brightness comes back when you leave the app.
 - **Warmth** goes from daylight (6500K) to warm (2700K). **Ring width** controls how much of the screen glows in Ring mode.
+- Switch from **White** to **Color** to light the screen in any color. The picker covers only half the screen, so you can watch the light change as you pick.
 - Controls fade away after a few seconds. Tap anywhere to bring them back.
 - The screen stays awake while the app is open.
 

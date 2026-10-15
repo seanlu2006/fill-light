@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		70E3D12A7A30C478BAE45C16 /* FillLightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FB889E53B4C3A4BCE805DB /* FillLightApp.swift */; };
+		7235759646A9BEF60BF54DFF /* ColorPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */; };
 		80E2655B2147313F12AC7771 /* ScreenBrightness.swift in Sources */ = {isa = PBXBuildFile; fileRef = D273663E670BC4D0FF169253 /* ScreenBrightness.swift */; };
 		874B375959D7673E98331C61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D49DEBFA4001418F81DCD6A /* Assets.xcassets */; };
 		89468D224893BDC1C32BF75F /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570B14ADBECD386437B382F1 /* LightView.swift */; };
@@ -22,6 +23,7 @@
 		5D49DEBFA4001418F81DCD6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCEF9AE300CA6C61FED3561A /* FillLight.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FillLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4786C513207EA9E626B8F9C /* LightMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightMath.swift; sourceTree = "<group>"; };
+		C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerSheet.swift; sourceTree = "<group>"; };
 		D273663E670BC4D0FF169253 /* ScreenBrightness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenBrightness.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,6 +51,7 @@
 			children = (
 				5D49DEBFA4001418F81DCD6A /* Assets.xcassets */,
 				4511F112ACC3EF609A56DB6B /* CameraPreview.swift */,
+				C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */,
 				25FB889E53B4C3A4BCE805DB /* FillLightApp.swift */,
 				570B14ADBECD386437B382F1 /* LightView.swift */,
 				D273663E670BC4D0FF169253 /* ScreenBrightness.swift */,
@@ -135,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95A4DBE498FA8E6F5E0A224A /* CameraPreview.swift in Sources */,
+				7235759646A9BEF60BF54DFF /* ColorPickerSheet.swift in Sources */,
 				70E3D12A7A30C478BAE45C16 /* FillLightApp.swift in Sources */,
 				AFF9BF391BBED2AB33DDBAC0 /* LightMath.swift in Sources */,
 				89468D224893BDC1C32BF75F /* LightView.swift in Sources */,

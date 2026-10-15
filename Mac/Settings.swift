@@ -11,6 +11,8 @@ final class Settings {
         static let kelvin = "kelvin"
         static let fadeNearPointer = "fadeNearPointer"
         static let allDisplays = "allDisplays"
+        static let useCustomColor = "useCustomColor"
+        static let customColor = "customColor"
     }
 
     init() {
@@ -19,7 +21,24 @@ final class Settings {
             Key.kelvin: LightMath.defaultKelvin,
             Key.fadeNearPointer: true,
             Key.allDisplays: false,
+            Key.useCustomColor: false,
+            Key.customColor: LightMath.defaultCustomColor.hex,
         ])
+    }
+
+    /// The color the ring is drawn in: custom color, or white at the chosen warmth.
+    var lightColor: LightColor {
+        useCustomColor ? customColor : LightMath.color(kelvin: kelvin)
+    }
+
+    var useCustomColor: Bool {
+        get { defaults.bool(forKey: Key.useCustomColor) }
+        set { defaults.set(newValue, forKey: Key.useCustomColor); onChange?() }
+    }
+
+    var customColor: LightColor {
+        get { defaults.string(forKey: Key.customColor).flatMap(LightColor.init(hex:)) ?? LightMath.defaultCustomColor }
+        set { defaults.set(newValue.hex, forKey: Key.customColor); onChange?() }
     }
 
     /// 0...1, maps to ring thickness.

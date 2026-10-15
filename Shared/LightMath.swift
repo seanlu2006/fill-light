@@ -7,9 +7,24 @@ public struct LightColor: Equatable {
     public var blue: Double
 
     public init(red: Double, green: Double, blue: Double) {
-        self.red = red
-        self.green = green
-        self.blue = blue
+        self.red = min(max(red, 0), 1)
+        self.green = min(max(green, 0), 1)
+        self.blue = min(max(blue, 0), 1)
+    }
+
+    /// Parses "#RRGGBB" or "RRGGBB". Used to save custom colors in UserDefaults.
+    public init?(hex: String) {
+        var digits = hex.trimmingCharacters(in: .whitespaces)
+        if digits.hasPrefix("#") { digits.removeFirst() }
+        guard digits.count == 6, let value = UInt32(digits, radix: 16) else { return nil }
+        self.init(red: Double((value >> 16) & 0xFF) / 255,
+                  green: Double((value >> 8) & 0xFF) / 255,
+                  blue: Double(value & 0xFF) / 255)
+    }
+
+    public var hex: String {
+        func byte(_ v: Double) -> Int { Int((v * 255).rounded()) }
+        return String(format: "#%02X%02X%02X", byte(red), byte(green), byte(blue))
     }
 }
 
@@ -17,6 +32,8 @@ public enum LightMath {
     /// The warmth slider runs from candle-ish warm to daylight.
     public static let kelvinRange: ClosedRange<Double> = 2700...6500
     public static let defaultKelvin: Double = 5000
+    /// A soft pink, the first color shown when someone opens the custom color picker.
+    public static let defaultCustomColor = LightColor(hex: "#FFB3C7")!
 
     /// Approximate color of a black-body light source at `kelvin`.
     /// Tanner Helland's curve fit; good enough for a screen light.
