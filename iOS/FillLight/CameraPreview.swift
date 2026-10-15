@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import SwiftUI
 
 /// Front camera preview, mirrored like a selfie. Shown inside the ring

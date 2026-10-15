@@ -3,7 +3,7 @@
 Turn your screen into a fill light when the room is too dark for the camera.
 
 - **Mac**: a menu bar app that lights a soft ring around the edge of your display. Works any time, not only during calls, and on top of full-screen apps.
-- **iPhone / iPad**: a full-screen light you can point at your face. *(In progress.)*
+- **iPhone / iPad**: a full-screen light you can point at your face, or a ring light with your front camera in the middle.
 
 macOS 26.2 and later ships a similar feature called [Edge Light](https://support.apple.com/en-la/125934), but it only shows up during video calls. FillLight is for everything else too: recording, photos, reading your face in a dark room, or Macs that don't have Edge Light.
 
@@ -44,7 +44,26 @@ This produces `build/FillLight.app` and a zip for releases. `swift run core-chec
 
 iOS does not let apps draw on top of other apps, so the iPhone and iPad version can't light the edges of FaceTime the way the Mac version does. Instead it turns the whole screen into an adjustable light you can aim at yourself, for example while on a call from your Mac.
 
-Coming soon.
+### Features
+
+- **Full** mode lights the whole screen. **Ring** mode lights the edges and shows your front camera in the middle, so you can see how you're lit. The camera image never leaves the device and is never recorded.
+- **Brightness** sets the display brightness. Your own brightness comes back when you leave the app.
+- **Warmth** goes from daylight (6500K) to warm (2700K). **Ring width** controls how much of the screen glows in Ring mode.
+- Controls fade away after a few seconds. Tap anywhere to bring them back.
+- The screen stays awake while the app is open.
+
+### Install
+
+Requires iOS or iPadOS 17 or later. There is no App Store version, so you build it onto your own device with Xcode. A free Apple ID is enough.
+
+1. Install [Xcode](https://apps.apple.com/app/id497799835) and open `iOS/FillLight.xcodeproj`.
+2. Select the **FillLight** target → **Signing & Capabilities**, set **Team** to your Apple ID, and change the **Bundle Identifier** to something unique, like `com.yourname.FillLight`.
+3. Connect your iPhone or iPad, choose it as the run destination, and press **Run**.
+4. The first time, your device asks you to trust the developer: **Settings → General → VPN & Device Management**. You also need to turn on **Developer Mode** in **Settings → Privacy & Security**.
+
+With a free Apple ID the app stops opening after 7 days. Press **Run** in Xcode again to renew it. A paid Apple Developer account extends this to a year.
+
+`iOS/project.yml` describes the project for [XcodeGen](https://github.com/yonaskolb/XcodeGen). You only need XcodeGen if you change it: run `xcodegen` inside `iOS/`.
 
 ## Project layout
 
