@@ -17,6 +17,9 @@ struct LightView: View {
     @AppStorage("kelvin") private var kelvin = LightMath.defaultKelvin
     @AppStorage("useCustomColor") private var useCustomColor = false
     @AppStorage("customColor") private var customColorHex = LightMath.defaultCustomColor.hex
+    @AppStorage("hdrBoost") private var hdrBoost = false
+    /// The screen's HDR range, read when the app becomes active. 1 = no HDR.
+    @State private var hdrHeadroom = 1.0
 
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var camera = FrontCamera()
@@ -32,15 +35,21 @@ struct LightView: View {
         )
     }
 
+    private var currentColor: LightColor {
+        useCustomColor ? customColor.wrappedValue : LightMath.color(kelvin: kelvin)
+    }
+
     private var lightColor: Color {
-        let c = useCustomColor ? customColor.wrappedValue : LightMath.color(kelvin: kelvin)
+        let c = currentColor
         return Color(.sRGB, red: c.red, green: c.green, blue: c.blue)
     }
+
+    private var hdrAvailable: Bool { hdrHeadroom > 1 }
 
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                lightColor
+                EDRFillView(color: currentColor, headroom: hdrBoost && hdrAvailable ? hdrHeadroom : 1)
 
                 if mode == .ring {
                     ringCenter(in: proxy.size)
@@ -76,6 +85,7 @@ struct LightView: View {
         .onChange(of: kelvin) { _, _ in scheduleHide() }
         .onChange(of: ringWidth) { _, _ in scheduleHide() }
         .onChange(of: useCustomColor) { _, _ in scheduleHide() }
+        .onChange(of: hdrBoost) { _, _ in scheduleHide() }
         // Half-height sheet, so the light stays visible while picking a color.
         .sheet(isPresented: $pickingColor, onDismiss: scheduleHide) {
             ColorPickerSheet(color: customColor) { pickingColor = false }
@@ -133,6 +143,20 @@ struct LightView: View {
 
                 slider("Brightness", value: $screenBrightness, range: 0.2...1,
                        low: "sun.min", high: "sun.max.fill")
+
+                // Shown even without HDR, disabled, so people know the option exists.
+                Toggle(isOn: $hdrBoost) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "bolt.fill").frame(width: 22)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("HDR Boost")
+                            Text(hdrAvailable ? "Brighter than white. Uses more battery." : "Needs an HDR screen")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .disabled(!hdrAvailable)
 
                 if mode == .ring {
                     slider("Ring width", value: $ringWidth, range: 0...1,
@@ -226,6 +250,7 @@ struct LightView: View {
     private func activate() {
         UIApplication.shared.isIdleTimerDisabled = true
         brightness.apply(screenBrightness)
+        hdrHeadroom = brightness.potentialHeadroom
         updateCamera()
         scheduleHide()
     }

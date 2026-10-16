@@ -10,9 +10,11 @@
 		70E3D12A7A30C478BAE45C16 /* FillLightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FB889E53B4C3A4BCE805DB /* FillLightApp.swift */; };
 		7235759646A9BEF60BF54DFF /* ColorPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */; };
 		80E2655B2147313F12AC7771 /* ScreenBrightness.swift in Sources */ = {isa = PBXBuildFile; fileRef = D273663E670BC4D0FF169253 /* ScreenBrightness.swift */; };
+		84DF28E4E98C129514263BAA /* EDRFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8713EC6F7D6C5C22B2F0FE /* EDRFillView.swift */; };
 		874B375959D7673E98331C61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D49DEBFA4001418F81DCD6A /* Assets.xcassets */; };
 		89468D224893BDC1C32BF75F /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570B14ADBECD386437B382F1 /* LightView.swift */; };
 		95A4DBE498FA8E6F5E0A224A /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4511F112ACC3EF609A56DB6B /* CameraPreview.swift */; };
+		99542509BED318798F99C80F /* EDRFillLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E585DABA480530376BBCE87 /* EDRFillLayer.swift */; };
 		AFF9BF391BBED2AB33DDBAC0 /* LightMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4786C513207EA9E626B8F9C /* LightMath.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,7 +22,9 @@
 		25FB889E53B4C3A4BCE805DB /* FillLightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillLightApp.swift; sourceTree = "<group>"; };
 		4511F112ACC3EF609A56DB6B /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		570B14ADBECD386437B382F1 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
+		5C8713EC6F7D6C5C22B2F0FE /* EDRFillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EDRFillView.swift; sourceTree = "<group>"; };
 		5D49DEBFA4001418F81DCD6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6E585DABA480530376BBCE87 /* EDRFillLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EDRFillLayer.swift; sourceTree = "<group>"; };
 		BCEF9AE300CA6C61FED3561A /* FillLight.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FillLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4786C513207EA9E626B8F9C /* LightMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightMath.swift; sourceTree = "<group>"; };
 		C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerSheet.swift; sourceTree = "<group>"; };
@@ -40,6 +44,7 @@
 		532EE3E5745A07FEE7BA838F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				6E585DABA480530376BBCE87 /* EDRFillLayer.swift */,
 				C4786C513207EA9E626B8F9C /* LightMath.swift */,
 			);
 			name = Shared;
@@ -52,6 +57,7 @@
 				5D49DEBFA4001418F81DCD6A /* Assets.xcassets */,
 				4511F112ACC3EF609A56DB6B /* CameraPreview.swift */,
 				C5677905D2768CD1D04B136B /* ColorPickerSheet.swift */,
+				5C8713EC6F7D6C5C22B2F0FE /* EDRFillView.swift */,
 				25FB889E53B4C3A4BCE805DB /* FillLightApp.swift */,
 				570B14ADBECD386437B382F1 /* LightView.swift */,
 				D273663E670BC4D0FF169253 /* ScreenBrightness.swift */,
@@ -139,6 +145,8 @@
 			files = (
 				95A4DBE498FA8E6F5E0A224A /* CameraPreview.swift in Sources */,
 				7235759646A9BEF60BF54DFF /* ColorPickerSheet.swift in Sources */,
+				99542509BED318798F99C80F /* EDRFillLayer.swift in Sources */,
+				84DF28E4E98C129514263BAA /* EDRFillView.swift in Sources */,
 				70E3D12A7A30C478BAE45C16 /* FillLightApp.swift in Sources */,
 				AFF9BF391BBED2AB33DDBAC0 /* LightMath.swift in Sources */,
 				89468D224893BDC1C32BF75F /* LightView.swift in Sources */,

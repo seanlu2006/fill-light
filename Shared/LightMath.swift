@@ -59,6 +59,12 @@ public enum LightMath {
         return LightColor(red: unit(red), green: unit(green), blue: unit(blue))
     }
 
+    /// sRGB component (as stored and shown in pickers) → linear light, which is what
+    /// HDR rendering multiplies. 0.5 in sRGB is only about 21% of the light of 1.0.
+    public static func linear(_ srgb: Double) -> Double {
+        srgb <= 0.04045 ? srgb / 12.92 : pow((srgb + 0.055) / 1.055, 2.4)
+    }
+
     /// Ring thickness in points for a brightness in 0...1.
     /// Wider ring = more light, like Apple's Edge Light.
     public static func ringThickness(brightness: Double, shortSide: Double) -> Double {

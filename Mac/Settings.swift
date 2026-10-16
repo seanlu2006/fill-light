@@ -13,6 +13,8 @@ final class Settings {
         static let allDisplays = "allDisplays"
         static let useCustomColor = "useCustomColor"
         static let customColor = "customColor"
+        static let hdrBoost = "hdrBoost"
+        static let maxScreenBrightness = "maxScreenBrightness"
     }
 
     init() {
@@ -23,7 +25,21 @@ final class Settings {
             Key.allDisplays: false,
             Key.useCustomColor: false,
             Key.customColor: LightMath.defaultCustomColor.hex,
+            Key.hdrBoost: false,
+            Key.maxScreenBrightness: false,
         ])
+    }
+
+    /// Draw the ring brighter than normal white on HDR displays. Uses more power.
+    var hdrBoost: Bool {
+        get { defaults.bool(forKey: Key.hdrBoost) }
+        set { defaults.set(newValue, forKey: Key.hdrBoost); onChange?() }
+    }
+
+    /// Turn display brightness all the way up while the light is on (private API, built-in display only).
+    var maxScreenBrightness: Bool {
+        get { defaults.bool(forKey: Key.maxScreenBrightness) }
+        set { defaults.set(newValue, forKey: Key.maxScreenBrightness); onChange?() }
     }
 
     /// The color the ring is drawn in: custom color, or white at the chosen warmth.

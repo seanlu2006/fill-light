@@ -13,6 +13,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let allDisplaysItem = NSMenuItem(title: "Light All Displays", action: #selector(toggleAllDisplays), keyEquivalent: "")
     private let whiteItem = NSMenuItem(title: "White Light", action: #selector(useWhiteLight), keyEquivalent: "")
     private let customColorItem = NSMenuItem(title: "Custom Color…", action: #selector(chooseCustomColor), keyEquivalent: "")
+    private let hdrItem = NSMenuItem(title: "HDR Boost", action: #selector(toggleHDR), keyEquivalent: "")
+    private let maxBrightnessItem = NSMenuItem(title: "Max Screen Brightness While On", action: #selector(toggleMaxBrightness), keyEquivalent: "")
+    private let brightnessTip = NSMenuItem(title: "Tip: turn display brightness up for more light", action: nil, keyEquivalent: "")
     private let brightnessSlider = NSSlider()
     private let warmthSlider = NSSlider()
 
@@ -69,9 +72,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(allDisplaysItem)
 
         menu.addItem(.separator())
-        let tip = NSMenuItem(title: "Tip: turn display brightness up for more light", action: nil, keyEquivalent: "")
-        tip.isEnabled = false
-        menu.addItem(tip)
+        hdrItem.target = self
+        hdrItem.toolTip = "Light the ring brighter than normal white on HDR (XDR) displays. Uses more power."
+        menu.addItem(hdrItem)
+        maxBrightnessItem.target = self
+        maxBrightnessItem.toolTip = "Turns the built-in display all the way up while the light is on, and back when it goes off."
+        // Private API: hide the option if this macOS doesn't have it.
+        if DisplayBrightness.isAvailable {
+            menu.addItem(maxBrightnessItem)
+        } else {
+            brightnessTip.isEnabled = false
+            menu.addItem(brightnessTip)
+        }
+
+        menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit FillLight", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         return menu
     }
@@ -104,6 +118,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         whiteItem.state = settings.useCustomColor ? .off : .on
         customColorItem.state = settings.useCustomColor ? .on : .off
         customColorItem.image = settings.useCustomColor ? swatch(settings.customColor) : nil
+        let hdrAvailable = OverlayController.hdrAvailable
+        hdrItem.title = hdrAvailable ? "HDR Boost" : "HDR Boost (needs an HDR display)"
+        hdrItem.isEnabled = hdrAvailable
+        hdrItem.state = hdrAvailable && settings.hdrBoost ? .on : .off
+        maxBrightnessItem.state = settings.maxScreenBrightness ? .on : .off
         let symbol = on ? "lightbulb.fill" : "lightbulb"
         let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "FillLight")
         image?.isTemplate = true
@@ -143,6 +162,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Moving the warmth slider means "white light again".
         settings.useCustomColor = false
         settings.kelvin = flipKelvin(warmthSlider.doubleValue)
+    }
+
+    @objc private func toggleHDR() {
+        settings.hdrBoost.toggle()
+        updateUI()
+    }
+
+    @objc private func toggleMaxBrightness() {
+        settings.maxScreenBrightness.toggle()
+        updateUI()
+    }
+
+    /// Give the display its own brightness back if we turned it up.
+    func applicationWillTerminate(_ notification: Notification) {
+        overlay.setOn(false)
     }
 
     @objc private func useWhiteLight() {

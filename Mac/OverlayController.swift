@@ -5,7 +5,14 @@ final class OverlayController {
     private let settings: Settings
     private var windows: [CGDirectDisplayID: NSWindow] = [:]
     private var mouseMonitors: [Any] = []
+    /// Display brightness from before we turned it up, to give back when the light goes off.
+    private var savedBrightness: [CGDirectDisplayID: Float] = [:]
     private(set) var isOn = false
+
+    /// True when at least one connected display can show brighter-than-white (HDR) content.
+    static var hdrAvailable: Bool {
+        NSScreen.screens.contains { $0.maximumPotentialExtendedDynamicRangeColorComponentValue > 1 }
+    }
 
     init(settings: Settings) {
         self.settings = settings
@@ -26,11 +33,13 @@ final class OverlayController {
             windows.values.forEach { $0.orderOut(nil) }
             windows.removeAll()
             stopTrackingPointer()
+            syncDisplayBrightness(lit: [])
             return
         }
 
         let screens = targetScreens()
         let wanted = Set(screens.compactMap(Self.displayID))
+        syncDisplayBrightness(lit: settings.maxScreenBrightness ? wanted : [])
         for (id, window) in windows where !wanted.contains(id) {
             window.orderOut(nil)
             windows[id] = nil
@@ -44,6 +53,10 @@ final class OverlayController {
             if let ring = window.contentView as? RingView {
                 ring.brightness = settings.brightness
                 ring.color = settings.lightColor
+                // Ask for the display's full HDR range; macOS clamps to what it can show right now.
+                ring.headroom = settings.hdrBoost
+                    ? Double(screen.maximumPotentialExtendedDynamicRangeColorComponentValue)
+                    : 1
                 ring.fadeNearPointer = settings.fadeNearPointer
             }
             window.orderFrontRegardless()
@@ -54,6 +67,20 @@ final class OverlayController {
             updatePointerHole()
         } else {
             stopTrackingPointer()
+        }
+    }
+
+    /// Turns `lit` displays all the way up (remembering their brightness first) and
+    /// gives every other display we touched its old brightness back.
+    private func syncDisplayBrightness(lit: Set<CGDirectDisplayID>) {
+        for (id, original) in savedBrightness where !lit.contains(id) {
+            DisplayBrightness.set(id, to: original)
+            savedBrightness[id] = nil
+        }
+        for id in lit where savedBrightness[id] == nil {
+            guard let current = DisplayBrightness.get(id) else { continue }
+            savedBrightness[id] = current
+            DisplayBrightness.set(id, to: 1)
         }
     }
 

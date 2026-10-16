@@ -14,6 +14,11 @@ final class ScreenBrightness {
             ?? UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.screen }.first
     }
 
+    /// How many times brighter than normal white this screen can go for HDR content (1 = no HDR).
+    var potentialHeadroom: Double {
+        Double(screen?.potentialEDRHeadroom ?? 1)
+    }
+
     func apply(_ value: Double) {
         guard let screen else { return }
         if original == nil { original = screen.brightness }

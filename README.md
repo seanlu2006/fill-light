@@ -19,7 +19,14 @@ macOS 26.2 and later ships a similar feature called [Edge Light](https://support
 - Control it from Shortcuts or scripts with `filllight://on`, `filllight://off` and `filllight://toggle`, for example `open filllight://toggle`.
 - Settings are remembered. No Accessibility or camera permission needed.
 
-For the most light, turn your display brightness all the way up.
+### More light
+
+Ring width is only one way to get more light. Two options in the menu go further:
+
+- **HDR Boost** draws the ring brighter than normal white on HDR displays, such as the XDR display on MacBook Pro. It uses more power, and macOS may dim the rest of the screen a little to make room for it.
+- **Max Screen Brightness While On** turns the built-in display all the way up while the light is on and puts it back when the light goes off. macOS has no public API for this, so FillLight uses a private one that many open-source utilities rely on. If a future macOS removes it, the option disappears from the menu.
+
+Saturated colors give much less light than white, because only some of the display's red, green and blue subpixels are lit. Pale colors are a good middle ground.
 
 ### Install
 
@@ -49,6 +56,7 @@ iOS does not let apps draw on top of other apps, so the iPhone and iPad version 
 
 - **Full** mode lights the whole screen. **Ring** mode lights the edges and shows your front camera in the middle, so you can see how you're lit. The camera image never leaves the device and is never recorded.
 - **Brightness** sets the display brightness. Your own brightness comes back when you leave the app.
+- **HDR Boost** makes the light brighter than normal white on HDR screens. It uses more battery.
 - **Warmth** goes from daylight (6500K) to warm (2700K). **Ring width** controls how much of the screen glows in Ring mode.
 - Switch from **White** to **Color** to light the screen in any color. The picker covers only half the screen, so you can watch the light change as you pick.
 - Controls fade away after a few seconds. Tap anywhere to bring them back.

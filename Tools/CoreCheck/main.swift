@@ -39,6 +39,9 @@ let roundTrip = LightColor(red: 0.2, green: 0.4, blue: 0.6)
 check(LightColor(hex: roundTrip.hex)?.hex == roundTrip.hex, "hex round-trips")
 check(LightColor(red: 2, green: -1, blue: 0.5).red == 1, "components are clamped")
 
+check(LightMath.linear(0) == 0 && LightMath.linear(1) == 1, "linear keeps black and white")
+check(abs(LightMath.linear(0.5) - 0.214) < 0.001, "sRGB 0.5 is about 21% linear, got \(LightMath.linear(0.5))")
+
 if failures == 0 {
     print("core-check: all checks passed")
 } else {
