@@ -149,7 +149,7 @@ struct LightView: View {
                     HStack(spacing: 12) {
                         Image(systemName: "bolt.fill").frame(width: 22)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("HDR Boost")
+                            Text("HDR Boost (Experimental)")
                             Text(hdrAvailable ? "Brighter than white. Uses more battery." : "Needs an HDR screen")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

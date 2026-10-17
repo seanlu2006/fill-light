@@ -13,7 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let allDisplaysItem = NSMenuItem(title: "Light All Displays", action: #selector(toggleAllDisplays), keyEquivalent: "")
     private let whiteItem = NSMenuItem(title: "White Light", action: #selector(useWhiteLight), keyEquivalent: "")
     private let customColorItem = NSMenuItem(title: "Custom Color…", action: #selector(chooseCustomColor), keyEquivalent: "")
-    private let hdrItem = NSMenuItem(title: "HDR Boost", action: #selector(toggleHDR), keyEquivalent: "")
+    private let hdrItem = NSMenuItem(title: "HDR Boost (Experimental)", action: #selector(toggleHDR), keyEquivalent: "")
     private let maxBrightnessItem = NSMenuItem(title: "Max Screen Brightness While On", action: #selector(toggleMaxBrightness), keyEquivalent: "")
     private let brightnessTip = NSMenuItem(title: "Tip: turn display brightness up for more light", action: nil, keyEquivalent: "")
     private let brightnessSlider = NSSlider()
@@ -119,7 +119,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         customColorItem.state = settings.useCustomColor ? .on : .off
         customColorItem.image = settings.useCustomColor ? swatch(settings.customColor) : nil
         let hdrAvailable = OverlayController.hdrAvailable
-        hdrItem.title = hdrAvailable ? "HDR Boost" : "HDR Boost (needs an HDR display)"
+        hdrItem.title = hdrAvailable ? "HDR Boost (Experimental)" : "HDR Boost (needs an HDR display)"
         hdrItem.isEnabled = hdrAvailable
         hdrItem.state = hdrAvailable && settings.hdrBoost ? .on : .off
         maxBrightnessItem.state = settings.maxScreenBrightness ? .on : .off
